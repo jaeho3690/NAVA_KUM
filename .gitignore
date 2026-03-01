@@ -13,8 +13,10 @@
 *.npz
 *.yaml
 *.out
+*.cache
 *.pkl
 *.png
+*.parquet
 *.xlsx
 *.pyc
 __pycache__/
