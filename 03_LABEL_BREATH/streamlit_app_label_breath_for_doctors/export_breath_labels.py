@@ -48,8 +48,8 @@ def _breath_file_candidates(patient_dir: str) -> List[Path]:
     patient_name = Path(patient_dir).name
     patient_id = extract_patient_id(patient_dir)
     return [
-        base_path / f"BB_patient_{patient_id}_clustered_breaths.pkl",
         base_path / f"AA_patient_{patient_id}_clustered_breaths.pkl",
+        base_path / f"BB_patient_{patient_id}_clustered_breaths.pkl",
         base_path / f"{patient_name}_clustered_breaths.pkl",
         base_path / f"{patient_name}_clustered_breaths_with_anomaly.pkl",
     ]
@@ -156,7 +156,7 @@ def export_one_patient(patient_dir: str, annotators: Iterable[str], output_root:
     patient_out_dir = output_root / patient_dir
     patient_out_dir.mkdir(parents=True, exist_ok=True)
 
-    stem = f"{source_path.stem}__doctor_labels"
+    stem = f"BB_patient_{patient_id}_clustered_breaths__doctor_labels"
     pkl_out = patient_out_dir / f"{stem}.pkl"
     csv_out = patient_out_dir / f"{stem}.csv"
     out_df.to_pickle(pkl_out)
