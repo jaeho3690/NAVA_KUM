@@ -1,8 +1,10 @@
 import streamlit as st
 
+from auth import require_shared_password
 from utils import ANNOTATORS, build_patient_status_snapshot, list_detected_versions
 
 st.set_page_config(page_title="NAVA Breath Labeling For Doctors", layout="wide")
+require_shared_password("NAVA Breath Labeling App For Doctors")
 
 st.title("NAVA Breath Labeling App For Doctors")
 st.markdown(

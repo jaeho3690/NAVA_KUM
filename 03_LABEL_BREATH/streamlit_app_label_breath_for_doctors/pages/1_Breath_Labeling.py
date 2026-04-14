@@ -3,6 +3,7 @@ import math
 import plotly.graph_objects as go
 import streamlit as st
 
+from auth import require_shared_password
 from utils import (
     ANNOTATORS,
     append_label,
@@ -155,6 +156,7 @@ def _plot_breath(signal_df, current, margin_sec: int):
 
 
 st.set_page_config(page_title="Breath labeling", layout="wide")
+require_shared_password("Breath labeling")
 st.title("Breath labeling")
 st.caption(
     "`AA/BB_patient_NN_clustered_breaths.pkl`의 breath를 보고 "

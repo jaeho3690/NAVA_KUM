@@ -8,6 +8,10 @@ streamlit run app.py
 
 Conda 환경은 `NAVA`를 사용하세요.
 
+## 로그인
+- 앱 진입 시 공용 비밀번호 입력이 필요합니다.
+- 기본 비밀번호는 코드에 설정되어 있으며, 필요하면 환경 변수 `NAVA_DOCTOR_LABEL_PASSWORD`로 덮어쓸 수 있습니다.
+
 ## 입력 경로
 - `/home/jhkim/NAVA/03_LABEL_BREATH/notebooks/outputs/03_breath_detect/<version>/patient_<id>/`
 - 필수 파일
