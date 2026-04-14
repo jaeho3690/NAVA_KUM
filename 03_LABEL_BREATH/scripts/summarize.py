@@ -7,7 +7,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import pandas as pd
 
-BASE_DIR = Path("/home/jhkim/NAVA/03_LABEL_BREATH")
+BASE_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_DETECTED_ROOT = BASE_DIR / "stored_results" / "00_detected"
 DEFAULT_LABELS_DIR = BASE_DIR / "stored_results" / "01_labeled"
 DEFAULT_OUTPUT_ROOT = BASE_DIR / "stored_results" / "02_summarized"

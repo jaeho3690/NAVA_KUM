@@ -153,6 +153,13 @@ def extract_version_tag(patient_dir: str) -> str:
     return parts[0] if parts else "unknown"
 
 
+def _sorted_status_df(rows: List[Dict], columns: List[str]) -> pd.DataFrame:
+    df = pd.DataFrame(rows, columns=columns)
+    if df.empty:
+        return df
+    return df.sort_values(["version", "patient_id"], ascending=[False, True]).reset_index(drop=True)
+
+
 def _coerce_bool(series: pd.Series) -> pd.Series:
     def _to_bool(value):
         if isinstance(value, bool):
@@ -820,7 +827,10 @@ def build_patient_status_snapshot(annotator: str, version_tag: Optional[str] = N
                     "status": f"ERROR: {e}",
                 }
             )
-    return pd.DataFrame(rows).sort_values(["version", "patient_id"], ascending=[False, True]).reset_index(drop=True)
+    return _sorted_status_df(
+        rows,
+        ["version", "patient_id", "total_candidates", "labeled", "remaining", "status"],
+    )
 
 
 def build_filtering_status_snapshot(
@@ -902,7 +912,22 @@ def build_filtering_status_snapshot(
                     "status": f"ERROR: {e}",
                 }
             )
-    return pd.DataFrame(rows).sort_values(["version", "patient_id"], ascending=[False, True]).reset_index(drop=True)
+    return _sorted_status_df(
+        rows,
+        [
+            "version",
+            "patient_id",
+            "total_candidates",
+            "final_breath_count",
+            "split_saved",
+            "kept_as_is",
+            "removed",
+            "processed",
+            "remaining",
+            "progress_ratio",
+            "status",
+        ],
+    )
 
 
 def load_split_actions(version_tag: str, patient_id: Optional[str] = None) -> pd.DataFrame:

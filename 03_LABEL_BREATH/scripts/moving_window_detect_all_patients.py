@@ -11,9 +11,11 @@ import pandas as pd
 from scipy.signal import find_peaks
 
 
-DEFAULT_RAW_DIR = Path('/home/jhkim/NAVA/02_YOLO/data/1_Refined_Raw')
-DEFAULT_PEAK_DIR = Path('/home/jhkim/NAVA/02_YOLO/data/2_Refined_Peaks')
-DEFAULT_OUTPUT_DIR = Path('/home/jhkim/NAVA/03_LABEL_BREATH/stored_results/00_detected')
+BASE_DIR = Path(__file__).resolve().parents[1]
+REPO_DIR = BASE_DIR.parent
+DEFAULT_RAW_DIR = REPO_DIR / '02_YOLO' / 'data' / '1_Refined_Raw'
+DEFAULT_PEAK_DIR = REPO_DIR / '02_YOLO' / 'data' / '2_Refined_Peaks'
+DEFAULT_OUTPUT_DIR = BASE_DIR / 'stored_results' / '00_detected'
 
 # Detection parameters (same logic as notebook)
 FS = 100  # 신호 샘플링 주파수(Hz)

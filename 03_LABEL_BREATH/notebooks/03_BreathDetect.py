@@ -15,7 +15,9 @@ from sklearn.metrics import silhouette_score, pairwise_distances
 # =========================
 # User Arguments (edit here)
 # =========================
-PARENT_DIR = Path("/home/jhkim/NAVA/03_LABEL_BREATH/stored_results/02_summarized")
+NOTEBOOKS_DIR = Path(__file__).resolve().parent
+BASE_DIR = NOTEBOOKS_DIR.parent
+PARENT_DIR = BASE_DIR / "stored_results" / "02_summarized"
 ANALYSIS_FOLDER = "20260301"
 
 TIMESTAMP_COL = "timestamp"
@@ -42,7 +44,7 @@ CLUSTER_LINKAGE = "average"
 CLUSTER_DISTANCE_METRIC = "mse"  # "mse" | "manhattan" | "mae"
 
 # Output root requested by user
-OUT_ROOT = Path("/home/jhkim/NAVA/03_LABEL_BREATH/notebooks/outputs/03_breath_detect")
+OUT_ROOT = NOTEBOOKS_DIR / "outputs" / "03_breath_detect"
 
 
 @dataclass

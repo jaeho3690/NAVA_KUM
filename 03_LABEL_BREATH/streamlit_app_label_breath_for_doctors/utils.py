@@ -13,10 +13,11 @@ import numpy as np
 import pandas as pd
 
 
-BASE_DIR = Path("/home/jhkim/NAVA/03_LABEL_BREATH")
+APP_DIR = Path(__file__).resolve().parent
+BASE_DIR = APP_DIR.parent
 BREATH_OUTPUT_DIR = BASE_DIR / "notebooks" / "outputs" / "03_breath_detect"
 LABELED_DIR = BASE_DIR / "stored_results" / "04_breath_labels"
-CACHE_DIR = BASE_DIR / "streamlit_app_label_breath_for_doctors" / ".cache_parquet"
+CACHE_DIR = APP_DIR / ".cache_parquet"
 
 ANNOTATORS = ["이주영", "박지선", "조한나", "김재호", "김시현", "오창준", "Test"]
 BREATH_LABELS = ["Normal", "Sigh", "Apnea", "Hiccup", "NotSure"]
@@ -109,6 +110,13 @@ def extract_patient_id(patient_dir: str) -> str:
 def extract_version_tag(patient_dir: str) -> str:
     parts = Path(patient_dir).parts
     return parts[0] if parts else "unknown"
+
+
+def _sorted_status_df(rows: List[Dict], columns: List[str]) -> pd.DataFrame:
+    df = pd.DataFrame(rows, columns=columns)
+    if df.empty:
+        return df
+    return df.sort_values(["version", "patient_id"], ascending=[False, True]).reset_index(drop=True)
 
 
 def _coerce_bool(series: pd.Series) -> pd.Series:
@@ -553,4 +561,7 @@ def build_patient_status_snapshot(annotator: str, version_tag: Optional[str] = N
                     "status": f"ERROR: {e}",
                 }
             )
-    return pd.DataFrame(rows).sort_values(["version", "patient_id"], ascending=[False, True]).reset_index(drop=True)
+    return _sorted_status_df(
+        rows,
+        ["version", "patient_id", "total_candidates", "labeled", "remaining", "status"],
+    )

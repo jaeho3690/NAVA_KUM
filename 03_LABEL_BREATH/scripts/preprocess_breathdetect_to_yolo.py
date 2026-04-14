@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt  # noqa: E402
 CLASS_PEAK = 0
 CLASS_NORMAL = 1
 CLASS_ABNORMAL = 2
+BASE_DIR = Path(__file__).resolve().parents[1]
+REPO_DIR = BASE_DIR.parent
 
 
 def to_bool(text: str) -> bool:
@@ -559,13 +561,13 @@ def main() -> None:
     parser.add_argument(
         "--breath-output-root",
         type=Path,
-        default=Path("/home/jhkim/NAVA/03_LABEL_BREATH/notebooks/outputs/03_breath_detect"),
+        default=BASE_DIR / "notebooks" / "outputs" / "03_breath_detect",
     )
     parser.add_argument("--analysis-folder", type=str, default="20260301")
     parser.add_argument(
         "--out-root",
         type=Path,
-        default=Path("/home/jhkim/NAVA/02_YOLO/data/4_BreathDetect_YOLO"),
+        default=REPO_DIR / "02_YOLO" / "data" / "4_BreathDetect_YOLO",
     )
     parser.add_argument("--signal-col", type=str, default="edi_smooth_for_detection")
     parser.add_argument("--window-size", type=int, default=2000)
