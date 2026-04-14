@@ -7,7 +7,7 @@ import streamlit as st
 
 
 AUTH_SESSION_KEY = "doctor_labeling_authenticated"
-DEFAULT_SHARED_PASSWORD = "jaeho3690"
+DEFAULT_SHARED_PASSWORD = "navalabel"
 
 
 def _expected_password() -> str:
