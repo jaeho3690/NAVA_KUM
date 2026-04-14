@@ -6,6 +6,7 @@ import streamlit as st
 from auth import require_shared_password
 from utils import (
     ANNOTATORS,
+    BREATH_LABELS,
     append_label,
     build_breath_candidates,
     extract_patient_id,
@@ -55,6 +56,11 @@ def _inject_label_button_colors() -> None:
             border: 1px solid #6d28d9 !important;
         }
         .st-key-breath_label_actions div[data-testid="stColumn"]:nth-of-type(5) button {
+            background-color: #14b8a6 !important;
+            color: #ffffff !important;
+            border: 1px solid #0f766e !important;
+        }
+        .st-key-breath_label_actions div[data-testid="stColumn"]:nth-of-type(6) button {
             background-color: #f59e0b !important;
             color: #111827 !important;
             border: 1px solid #d97706 !important;
@@ -100,7 +106,7 @@ def _plot_breath(signal_df, current, margin_sec: int):
                 y=peaks["edi_raw"],
                 mode="markers",
                 name="merged_peak",
-                marker=dict(color="#f97316", size=7, symbol="triangle-up"),
+                marker=dict(color="#f97316", size=12, symbol="triangle-up"),
             )
         )
 
@@ -160,11 +166,16 @@ require_shared_password("Breath labeling")
 st.title("Breath labeling")
 st.caption(
     "`AA/BB_patient_NN_clustered_breaths.pkl`의 breath를 보고 "
-    "`Normal`, `Sigh`, `Apnea`, `Hiccup`, `NotSure` 라벨을 저장합니다."
+    "`Normal`, `Sigh`, `Apnea`, `Hiccup`, `NeedSplit`, `NotSure` 라벨을 저장합니다."
 )
 st.info(
-    "간단 가이드: 한 breath 안에 `Apnea`와 `Normal`이 함께 보이면 우세한 패턴이 명확할 때만 해당 라벨을 선택하고, "
-    "애매하면 `NotSure`로 저장한 뒤 comment에 `normal+apnea mixed`처럼 남겨주세요."
+    "간단 가이드: "
+    "`Normal` - 정상 호흡 | "
+    "`Sigh` - 한숨 | "
+    "`Apnea` - 무호흡 | "
+    "`Hiccup` - 딸국질 | "
+    "`NeedSplit` - 여러 조건이 겹쳐져 있는 호흡 | "
+    "`NotSure` - 선택지에 없음. Comment 작성요함."
 )
 
 with st.sidebar:
@@ -332,32 +343,13 @@ def _save_and_advance(label: str) -> None:
 
 _inject_label_button_colors()
 with st.container(key="breath_label_actions"):
-    col1, col2, col3, col4, col5 = st.columns(5)
-    if col1.button("Normal", width="stretch"):
-        try:
-            _save_and_advance("Normal")
-        except Exception as e:
-            st.error(f"저장 실패: {e}")
-    if col2.button("Sigh", width="stretch"):
-        try:
-            _save_and_advance("Sigh")
-        except Exception as e:
-            st.error(f"저장 실패: {e}")
-    if col3.button("Apnea", width="stretch"):
-        try:
-            _save_and_advance("Apnea")
-        except Exception as e:
-            st.error(f"저장 실패: {e}")
-    if col4.button("Hiccup", width="stretch"):
-        try:
-            _save_and_advance("Hiccup")
-        except Exception as e:
-            st.error(f"저장 실패: {e}")
-    if col5.button("NotSure", width="stretch"):
-        try:
-            _save_and_advance("NotSure")
-        except Exception as e:
-            st.error(f"저장 실패: {e}")
+    label_columns = st.columns(len(BREATH_LABELS))
+    for col, label_name in zip(label_columns, BREATH_LABELS):
+        if col.button(label_name, width="stretch"):
+            try:
+                _save_and_advance(label_name)
+            except Exception as e:
+                st.error(f"저장 실패: {e}")
 
 nav1, nav2, nav3 = st.columns(3)
 if nav1.button("Previous", width="stretch", disabled=current_idx <= 0):

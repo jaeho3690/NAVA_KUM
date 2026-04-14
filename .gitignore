@@ -4,6 +4,8 @@
 *.zip
 *.png 
 *.txt
+!requirements.txt
+!**/requirements.txt
 
 *.pt
 *.jsonl
@@ -25,3 +27,4 @@ __pycache__/
 .vscode/
 .DS_Store
 
+.omx/

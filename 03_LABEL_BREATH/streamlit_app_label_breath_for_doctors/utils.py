@@ -20,7 +20,7 @@ LABELED_DIR = BASE_DIR / "stored_results" / "04_breath_labels"
 CACHE_DIR = APP_DIR / ".cache_parquet"
 
 ANNOTATORS = ["이주영", "박지선", "조한나", "김재호", "김시현", "오창준", "Test"]
-BREATH_LABELS = ["Normal", "Sigh", "Apnea", "Hiccup", "NotSure"]
+BREATH_LABELS = ["Normal", "Sigh", "Apnea", "Hiccup", "NeedSplit", "NotSure"]
 LABEL_SCHEMA = [
     "label_id",
     "timestamp",
