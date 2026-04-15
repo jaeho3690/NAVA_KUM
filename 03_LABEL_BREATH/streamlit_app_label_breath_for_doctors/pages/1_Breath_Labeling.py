@@ -318,7 +318,7 @@ st.plotly_chart(_plot_breath(signal_df, current, ZOOM_MARGIN_SEC), width="stretc
 st.text_input(
     "Comment",
     key=comment_input_key,
-    placeholder="선택 이유나 메모가 있으면 남겨주세요.",
+    placeholder="선택 이유나 메모가 있으면 남겨주세요. 메모를 쓰고 Enter를 꼭 눌러야 저장됩니다.",
 )
 
 
