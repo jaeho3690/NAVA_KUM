@@ -11,7 +11,7 @@ st.markdown(
     "<h2 style='color:#dc2626; margin-bottom:0.4rem;'>먼저 Annotator를 선택해주세요.</h2>",
     unsafe_allow_html=True,
 )
-st.write("왼쪽 사이드바 또는 아래 페이지에서 split 반영된 breath 라벨링을 시작하세요.")
+st.write("왼쪽 사이드바 또는 아래 페이지에서 breath 라벨링을 시작하세요.")
 st.page_link("pages/1_Breath_Labeling.py", label="Breath labeling 페이지")
 
 st.markdown("---")

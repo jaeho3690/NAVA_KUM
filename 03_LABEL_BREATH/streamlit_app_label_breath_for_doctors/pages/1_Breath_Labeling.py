@@ -176,16 +176,18 @@ require_shared_password("Breath labeling")
 st.title("Breath labeling")
 st.caption(
     "`AA/BB_patient_NN_clustered_breaths.pkl`의 breath를 보고 "
-    "`Normal`, `Sigh`, `Apnea`, `Hiccup`, `NeedSplit`, `NotSure` 라벨을 저장합니다."
+    "`Phasic`, `Sigh`, `Apnea`, `Hiccup`, `Tonic Burst`, `Crying`, `NeedSplit`, `NotSure` 라벨을 저장합니다."
 )
 st.info(
     "간단 가이드: "
-    "`Normal` - 정상 호흡 | "
+    "`Phasic` - 정상 위상 호흡 | "
     "`Sigh` - 한숨 | "
     "`Apnea` - 무호흡 | "
     "`Hiccup` - 딸국질 | "
+    "`Tonic Burst` - 긴장성 버스트 | "
+    "`Crying` - 울음 | "
     "`NeedSplit` - 여러 조건이 겹쳐져 있는 호흡 | "
-    "`NotSure` - 선택지에 없음. Comment 작성요함."
+    "`NotSure` - 선택지에 없음. Comment 작성 요함."
 )
 
 with st.sidebar:

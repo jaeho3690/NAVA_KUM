@@ -54,12 +54,6 @@ def _current_breath_path(patient_dir: str) -> Optional[Path]:
     return None
 
 
-def get_bb_breath_path(patient_dir: str) -> Path:
-    base_path = BREATH_OUTPUT_DIR / patient_dir
-    patient_id = Path(patient_dir).name.replace("patient_", "")
-    return base_path / f"BB_patient_{patient_id}_clustered_breaths.pkl"
-
-
 def list_detected_versions() -> List[str]:
     if not BREATH_OUTPUT_DIR.exists():
         return []
@@ -283,12 +277,6 @@ def _load_run_meta_df(patient_dir: str) -> pd.DataFrame:
     return pd.read_csv(csv_path)
 
 
-def clear_patient_caches(patient_dir: str) -> None:
-    _load_breath_df.cache_clear()
-    _load_signal_df.cache_clear()
-    _load_run_meta_df.cache_clear()
-
-
 def build_breath_candidates(breath_df: pd.DataFrame, patient_id: str, anomaly_only: bool = True) -> List[Dict]:
     work = breath_df.copy()
     if anomaly_only and "AE_abnormal" in work.columns:
@@ -327,95 +315,6 @@ def build_breath_candidates(breath_df: pd.DataFrame, patient_id: str, anomaly_on
             }
         )
     return candidates
-
-
-def save_split_breath_segments(
-    patient_dir: str,
-    breath_df: pd.DataFrame,
-    target_breath_id: str,
-    segments: List[Dict],
-    annotator: str,
-    comment: str = "",
-) -> Path:
-    work = breath_df.copy()
-    work["breath_id"] = work["breath_id"].astype(str)
-    target_mask = work["breath_id"] == str(target_breath_id)
-    if int(target_mask.sum()) != 1:
-        raise ValueError(f"split 대상 breath를 정확히 하나 찾지 못했습니다: {target_breath_id}")
-
-    original_row = work.loc[target_mask].iloc[0].copy()
-    remaining = work.loc[~target_mask].copy()
-    split_group_id = uuid4().hex[:8]
-    original_breath_id = str(original_row.get("original_breath_id", original_row["breath_id"]))
-
-    new_rows = []
-    for idx, segment in enumerate(segments, start=1):
-        row = original_row.copy()
-        new_breath_id = f"{original_breath_id}_split_{split_group_id}_{idx}"
-        row["breath_id"] = new_breath_id
-        row["original_breath_id"] = original_breath_id
-        row["breath_label"] = f"breath_{new_breath_id}"
-        row["v_start_idx"] = int(segment["start_idx"])
-        row["v_end_idx"] = int(segment["end_idx"])
-        row["v_start_t"] = float(segment["start_ts"])
-        row["v_end_t"] = float(segment["end_ts"])
-        row["breath_duration_sec"] = (float(segment["end_ts"]) - float(segment["start_ts"])) / 1000.0
-        row["is_split"] = True
-        row["split_group_id"] = split_group_id
-        row["split_index"] = idx
-        row["split_comment"] = comment
-        if "annotator" in row.index:
-            row["annotator"] = annotator
-        new_rows.append(row)
-
-    out_df = pd.concat([remaining, pd.DataFrame(new_rows)], ignore_index=True)
-    out_df = out_df.sort_values(["v_start_t", "v_end_t", "breath_id"]).reset_index(drop=True)
-    out_path = get_bb_breath_path(patient_dir)
-    out_df.to_pickle(out_path)
-    clear_patient_caches(patient_dir)
-    return out_path
-
-
-def save_manual_peak(
-    patient_dir: str,
-    breath_df: pd.DataFrame,
-    target_breath_id: str,
-    peak_sample_idx: int,
-) -> Path:
-    work = breath_df.copy()
-    work["breath_id"] = work["breath_id"].astype(str)
-    target_mask = work["breath_id"] == str(target_breath_id)
-    if int(target_mask.sum()) != 1:
-        raise ValueError(f"peak 추가 대상 breath를 정확히 하나 찾지 못했습니다: {target_breath_id}")
-
-    row_idx = work.index[target_mask][0]
-    row = work.loc[row_idx].copy()
-    start_idx = int(row["v_start_idx"])
-    end_idx = int(row["v_end_idx"])
-    peak_sample_idx = int(peak_sample_idx)
-    if peak_sample_idx < start_idx or peak_sample_idx > end_idx:
-        raise ValueError("peak sample_idx는 breath 내부에 있어야 합니다.")
-
-    manual_peaks = list(row.get("manual_peak_indices", []) or [])
-    if peak_sample_idx not in manual_peaks:
-        manual_peaks.append(peak_sample_idx)
-    manual_peaks = sorted(set(int(x) for x in manual_peaks))
-
-    peak_indices = list(row.get("peak_indices", []) or [])
-    peak_indices.append(peak_sample_idx)
-    peak_indices = sorted(set(int(x) for x in peak_indices))
-    peak_rel_indices = [int(x - start_idx) for x in peak_indices if start_idx <= int(x) <= end_idx]
-
-    work.at[row_idx, "manual_peak_indices"] = manual_peaks
-    work.at[row_idx, "peak_indices"] = peak_indices
-    work.at[row_idx, "peak_rel_indices"] = peak_rel_indices
-    if "n_peaks" in work.columns:
-        work.at[row_idx, "n_peaks"] = len(peak_indices)
-
-    out_path = get_bb_breath_path(patient_dir)
-    work.to_pickle(out_path)
-    clear_patient_caches(patient_dir)
-    return out_path
 
 
 def _labels_path(annotator: str, version_tag: str) -> Path:

@@ -48,8 +48,8 @@ def _breath_file_candidates(patient_dir: str) -> List[Path]:
     patient_name = Path(patient_dir).name
     patient_id = extract_patient_id(patient_dir)
     return [
-        base_path / f"AA_patient_{patient_id}_clustered_breaths.pkl",
         base_path / f"BB_patient_{patient_id}_clustered_breaths.pkl",
+        base_path / f"AA_patient_{patient_id}_clustered_breaths.pkl",
         base_path / f"{patient_name}_clustered_breaths.pkl",
         base_path / f"{patient_name}_clustered_breaths_with_anomaly.pkl",
     ]
