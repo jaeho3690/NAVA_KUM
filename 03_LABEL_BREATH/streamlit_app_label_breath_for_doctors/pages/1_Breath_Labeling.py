@@ -5,6 +5,7 @@ import streamlit as st
 
 from auth import require_shared_password
 from utils import (
+    ANNOTATOR_COLORS,
     ANNOTATORS,
     BREATH_LABELS,
     append_label,
@@ -125,7 +126,7 @@ def _plot_breath(signal_df, current, margin_sec: int):
     other_df = wdf[(wdf["breath_mask"] == True) & (~target_mask)].copy()  # noqa: E712
 
     if not other_df.empty:
-        for breath_id, breath_chunk in other_df.groupby("breath_id", dropna=True):
+        for _, breath_chunk in other_df.groupby("breath_id", dropna=True):
             if breath_chunk.empty:
                 continue
             fig.add_vrect(
@@ -193,6 +194,13 @@ st.info(
 with st.sidebar:
     st.subheader("설정")
     annotator = st.selectbox("Annotator", options=ANNOTATORS, index=ANNOTATORS.index("Test"))
+    _color = ANNOTATOR_COLORS.get(annotator, "#4b5563")
+    st.markdown(
+        f"<div style='background:{_color};color:#fff;padding:6px 12px;"
+        f"border-radius:6px;font-weight:bold;font-size:1.05em;margin:4px 0 8px 0'>"
+        f"현재 Annotator: {annotator}</div>",
+        unsafe_allow_html=True,
+    )
     detected_versions = list_detected_versions()
     version_options = ["ALL"] + detected_versions if detected_versions else ["ALL"]
     selected_version = st.selectbox(
@@ -294,9 +302,13 @@ if st.session_state.get(comment_item_key) != current["item_id"]:
     st.session_state[comment_item_key] = current["item_id"]
     st.session_state[comment_input_key] = latest_comments.get(current["item_id"], "")
 
-st.caption(
+st.markdown(
+    f"<span style='background:{ANNOTATOR_COLORS.get(annotator, '#4b5563')};color:#fff;padding:3px 10px;"
+    f"border-radius:4px;font-weight:bold'>{annotator}</span>&nbsp;&nbsp;"
+    f"<span style='color:#6b7280;font-size:0.9em'>"
     f"patient: {patient_id} | breath_id: {current['breath_id']} | "
-    f"original_breath_id: {current['original_breath_id']} | item_id: {current['item_id']}"
+    f"original_breath_id: {current['original_breath_id']} | item_id: {current['item_id']}</span>",
+    unsafe_allow_html=True,
 )
 st.write(f"Index: {current_idx + 1}/{len(candidates)}")
 

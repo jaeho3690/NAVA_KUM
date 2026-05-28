@@ -19,7 +19,17 @@ BREATH_OUTPUT_DIR = BASE_DIR / "notebooks" / "outputs" / "03_breath_detect"
 LABELED_DIR = BASE_DIR / "stored_results" / "04_breath_labels"
 CACHE_DIR = APP_DIR / ".cache_parquet"
 
-ANNOTATORS = ["이주영", "박지선", "조한나", "김재호", "김시현", "오창준", "Test"]
+ANNOTATORS = ["이주영", "박지선", "조한나", "박규현", "김재호", "김시현", "오창준", "Test"]
+ANNOTATOR_COLORS: dict[str, str] = {
+    "이주영": "#1e40af",
+    "박지선": "#15803d",
+    "조한나": "#7c3aed",
+    "박규현": "#db2777",
+    "김재호": "#b91c1c",
+    "김시현": "#0f766e",
+    "오창준": "#c2410c",
+    "Test":   "#4b5563",
+}
 BREATH_LABELS = ["Phasic", "Sigh", "Apnea", "Hiccup", "Tonic Burst", "Crying", "NeedSplit", "NotSure"]
 LABEL_SCHEMA = [
     "label_id",
