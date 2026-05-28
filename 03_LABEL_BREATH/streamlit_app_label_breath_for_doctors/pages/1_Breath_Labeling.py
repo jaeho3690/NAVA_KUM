@@ -61,9 +61,19 @@ def _inject_label_button_colors() -> None:
             border: 1px solid #0f766e !important;
         }
         .st-key-breath_label_actions div[data-testid="stColumn"]:nth-of-type(6) button {
+            background-color: #ec4899 !important;
+            color: #ffffff !important;
+            border: 1px solid #db2777 !important;
+        }
+        .st-key-breath_label_actions div[data-testid="stColumn"]:nth-of-type(7) button {
             background-color: #f59e0b !important;
             color: #111827 !important;
             border: 1px solid #d97706 !important;
+        }
+        .st-key-breath_label_actions div[data-testid="stColumn"]:nth-of-type(8) button {
+            background-color: #6b7280 !important;
+            color: #ffffff !important;
+            border: 1px solid #4b5563 !important;
         }
         </style>
         """,
